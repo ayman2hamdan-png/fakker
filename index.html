@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<title>فكّر 🧠</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b1020;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif}
+main{max-width:520px;min-height:100vh;margin:auto;padding:22px 18px;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}.logo{font-size:30px;font-weight:900}
+.score{background:#18213a;padding:9px 14px;border-radius:15px}.card{background:#121a2e;border:1px solid #263252;border-radius:25px;padding:22px;box-shadow:0 15px 40px #0006}
+.center{text-align:center}.emoji{font-size:58px}.title{font-size:28px;font-weight:900;margin:10px 0}.question{font-size:19px;line-height:1.85}.muted{color:#9aa8c7}
+.input{width:100%;padding:16px;border-radius:15px;border:1px solid #34405f;background:#0b1020;color:white;font-size:18px;margin-top:12px}
+button{width:100%;padding:15px;margin-top:11px;border:0;border-radius:15px;background:#6d5dfc;color:#fff;font-size:17px;font-weight:800}button.alt{background:#202b47}
+.box{margin-top:13px;padding:14px;border-radius:15px;background:#0e162a;line-height:1.7}.ok{background:#123525}.bad{background:#351821}
+.foot{margin-top:auto;text-align:center;color:#697590;font-size:12px;padding-top:20px}
+</style>
+</head>
+<body>
+<main>
+<div class="top"><div class="logo">🧠 فكّر</div><div class="score">⭐ <span id="score">0</span></div></div>
+<div id="app"></div><div class="foot">Fakkar • Prototype 0.1</div>
+</main>
+<script>
+const P=[
+{e:'🕯️',t:'أول شيء',q:'أنت في غرفة مظلمة. أمامك شمعة، ومصباح زيت، وموقد. لديك عود ثقاب واحد. ماذا تشعل أولًا؟',a:['عود الثقاب'],h:['لا تفكر في الأشياء التي تريد تشغيلها.','هناك شيء تحتاجه قبل كل شيء.'],x:'بالضبط! قبل أن تشعل الشمعة أو المصباح أو الموقد، تحتاج أولًا إلى إشعال عود الثقاب.'},
+{e:'🛗',t:'الرجل والمصعد',q:'رجل يعيش في الطابق العاشر. عند عودته يصعد إلى السابع ثم يكمل على الدرج. في الأيام الممطرة يصعد مباشرة إلى العاشر. لماذا؟',a:['قصير','قصير القامة'],h:['المشكلة ليست في المصعد.','فكر في شيء يستطيع استخدامه في الأيام الممطرة.'],x:'صحيح! الرجل قصير القامة ولا يصل إلى زر الطابق العاشر. في الأيام الممطرة يستخدم مظلته للضغط عليه.'},
+{e:'📦',t:'الصناديق الثلاثة',q:'ثلاثة صناديق مكتوب عليها تفاح، برتقال، تفاح وبرتقال. جميع الملصقات خاطئة. يمكنك إخراج ثمرة واحدة فقط. من أي صندوق تبدأ؟',a:['تفاح وبرتقال'],h:['ابدأ بالصندوق الذي يقول إنه يحتوي النوعين.','تذكر أن كل الملصقات خاطئة.'],x:'ممتاز! ابدأ بالصندوق المكتوب عليه «تفاح وبرتقال» لأنه بالتأكيد ليس مختلطًا.'}
+];
+let i=0,s=0,h=0;
+const A=document.getElementById('app'),S=document.getElementById('score');
+const n=x=>x.toLowerCase().replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[^؀-ۿa-z0-9]/g,'');
+function home(){A.innerHTML='<div class="card center"><div class="emoji">🧠</div><div class="muted">اختبار العقل</div><div class="title">فكّر قبل أن تجيب</div><p class="question">ألغاز منطقية بدون خيارات. الحل ليس دائمًا كما يبدو.</p><button onclick="start()">ابدأ اللعب ▶</button></div>'}
+function start(){i=0;s=0;S.textContent=s;show()}
+function show(){h=0;let p=P[i];A.innerHTML=`<div class="card"><div class="muted">المرحلة ${i+1} من ${P.length}</div><div class="center emoji">${p.e}</div><div class="center title">${p.t}</div><div class="question">${p.q}</div><input id="ans" class="input" placeholder="اكتب حلك هنا..." autocomplete="off"><button onclick="check()">تحقق من الحل</button><button class="alt" onclick="hint()">💡 تلميح</button><div id="hint"></div><div id="fb"></div></div>`}
+function check(){let v=n(document.getElementById('ans').value),p=P[i],ok=v.length>3&&p.a.some(a=>v.includes(n(a))||n(a).includes(v)),f=document.getElementById('fb');if(ok){let g=h?70:100;s+=g;S.textContent=s;f.className='box ok';f.innerHTML='🎉 <b>أحسنت!</b><br>'+p.x+'<br><br>+'+g+' نقطة';setTimeout(()=>{if(i===P.length-1)finish();else{i++;show()}},1500)}else{f.className='box bad';f.textContent='🤔 ليس هذا الحل. حاول مرة أخرى وفكر في صياغة اللغز.'}}
+function hint(){let p=P[i],d=document.getElementById('hint');if(h<p.h.length){h++;d.className='box';d.textContent='💡 '+p.h[h-1]}else{d.className='box';d.textContent='💡 لا يوجد تلميح إضافي.'}}
+function finish(){A.innerHTML='<div class="card center"><div class="emoji">🏆</div><div class="title">أحسنت!</div><p class="question">أنهيت أول اختبار.<br>نتيجتك: <b>'+s+' نقطة</b></p><button onclick="start()">العب مرة أخرى 🔄</button></div>'}
+home();
+</script>
+</body>
+</html>
